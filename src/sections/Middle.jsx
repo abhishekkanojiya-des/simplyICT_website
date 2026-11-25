@@ -102,9 +102,9 @@ function Dots({ filled, total = 4 }) {
   )
 }
 
-export function Process() {
+export function Process({ bg = 'bg-white', card = 'bg-[#f7f9fc]' }) {
   return (
-    <section id="process" className="section bg-white">
+    <section id="process" className={`section ${bg}`}>
       <div className="container-site">
         <div className="grid items-end gap-6 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
           <div>
@@ -121,7 +121,7 @@ export function Process() {
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {PROCESS.map((s, i) => (
             <Reveal key={s.n} delay={i * 0.08} className="h-full">
-              <article className="group flex h-full min-h-[210px] flex-col rounded-[22px] border border-[#e8edf5] bg-[#f7f9fc] p-6 transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-brand-blue/30 hover:bg-white hover:shadow-[0_18px_40px_-24px_rgba(59,130,246,.5)]">
+              <article className={`group flex h-full min-h-[210px] flex-col rounded-[22px] border border-[#e8edf5] ${card} p-6 transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-brand-blue/30 hover:bg-white hover:shadow-[0_18px_40px_-24px_rgba(59,130,246,.5)]`}>
                 <div className="flex items-center justify-between">
                   <Dots filled={i + 1} />
                   <span className="text-[15px] font-medium tabular-nums text-muted">{s.n}</span>

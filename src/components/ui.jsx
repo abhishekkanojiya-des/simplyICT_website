@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion, useInView, animate, useReducedMotion } from 'framer-motion'
+import { motion, useInView, animate, useReducedMotion, useScroll, useSpring } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
+import { normalizePath } from '../lib/router'
 
 export const EASE = [0.22, 1, 0.36, 1]
 
@@ -11,7 +12,7 @@ export function Logo({ size = 36, className = '' }) {
       href="/"
       onClick={(e) => {
         // Already on the homepage: smooth-scroll to top instead of reloading
-        if (document.getElementById('top')) {
+        if (normalizePath(window.location.pathname) === '/' && document.getElementById('top')) {
           e.preventDefault()
           window.__lenis ? window.__lenis.scrollTo(0) : window.scrollTo({ top: 0, behavior: 'smooth' })
         }
@@ -49,7 +50,7 @@ export function BlurText({ text, as: Tag = 'h2', className = '', highlight = [],
       viewport={{ once: true, amount: 0.5 }}
       transition={{ staggerChildren: 0.06, delayChildren: delay }}
     >
-      {words.map((w, i) => (
+      {words.map((w, i) => w === '\n' ? <br key={i} /> : (
         <motion.span
           key={i}
           className="inline-block"
@@ -60,7 +61,7 @@ export function BlurText({ text, as: Tag = 'h2', className = '', highlight = [],
           }}
         >
           {w}
-          {i < words.length - 1 && ' '}
+          {i < words.length - 1 && words[i + 1] !== '\n' &&' '}
         </motion.span>
       ))}
     </MotionTag>
@@ -132,6 +133,19 @@ export function Button({ children, href = '#contact', variant = 'brand', classNa
         </span>
       )}
     </a>
+  )
+}
+
+/* ───────────── Page scroll progress bar (top of viewport) ───────────── */
+export function ScrollProgress() {
+  const { scrollYProgress } = useScroll()
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.3 })
+  return (
+    <motion.div
+      aria-hidden="true"
+      style={{ scaleX }}
+      className="fixed inset-x-0 top-0 z-[60] h-[3px] origin-left bg-gradient-to-r from-brand-blue via-brand-cyan to-brand-blue"
+    />
   )
 }
 

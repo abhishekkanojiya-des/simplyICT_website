@@ -23,8 +23,8 @@ function Dropdown({ item }) {
       className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3"
     >
       <div className={`grid gap-0.5 rounded-2xl border border-line bg-white p-2 shadow-[0_24px_60px_-20px_rgba(11,18,32,.25)] ${wide ? 'w-[560px] grid-cols-2' : 'w-[300px]'}`}>
-        {item.items.map(({ label, desc, icon: Icon }) => (
-          <a key={label} href={item.href} className="group/i flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-paper">
+        {item.items.map(({ label, href, desc, icon: Icon }) => (
+          <a key={label} href={href || item.href} className="group/i flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-paper">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-brand-blue/[0.08] text-brand-blue transition-colors group-hover/i:bg-brand-blue group-hover/i:text-white">
               <Icon size={17} />
             </span>
@@ -39,7 +39,7 @@ function Dropdown({ item }) {
   )
 }
 
-export default function Navbar() {
+export default function Navbar({ path = '/' }) {
   const [open, setOpen] = useState(null)
   const [mobile, setMobile] = useState(false)
   const [pill, setPill] = useState(false)
@@ -47,6 +47,8 @@ export default function Navbar() {
   const { scrollY } = useScroll()
   useMotionValueEvent(scrollY, 'change', (y) => setPill(y > 60))
   useEffect(() => { document.body.style.overflow = mobile ? 'hidden' : '' }, [mobile])
+  // a top-level item is "current" when its href is a page (not a hash link) we're on
+  const isCurrent = (href) => !!href && !href.includes('#') && href !== '/' && (path === href || path.startsWith(`${href}/`))
 
   return (
     <>
@@ -67,25 +69,29 @@ export default function Navbar() {
           <Logo size={34} className={`shrink-0 transition-colors duration-300 ${pill ? 'text-ink' : 'text-white'}`} />
 
           <ul className="hidden items-center xl:flex" onMouseLeave={() => setOpen(null)}>
-            {NAV.map((item) => (
-              <li key={item.label} className="relative" onMouseEnter={() => setOpen(item.items ? item.label : null)}>
-                <a
-                  href={item.href}
-                  onFocus={() => setOpen(item.items ? item.label : null)}
-                  aria-expanded={item.items ? open === item.label : undefined}
-                  className={`flex items-center whitespace-nowrap rounded-full px-3 py-2 text-[14.5px] font-medium transition-colors duration-300 2xl:px-3.5 ${
-                    pill
-                      ? open === item.label ? 'bg-paper text-ink' : 'text-ink/75 hover:text-ink'
-                      : open === item.label ? 'bg-white/10 text-white' : 'text-white/85 hover:text-white'
-                  }`}
-                >
-                  {item.label}
-                  {item.badge && <NewBadge light={!pill} />}
-                  {item.items && <ChevronDown size={14} className={`ml-1 transition-transform duration-300 ${open === item.label ? 'rotate-180' : ''}`} />}
-                </a>
-                <AnimatePresence>{open === item.label && item.items && <Dropdown item={item} />}</AnimatePresence>
-              </li>
-            ))}
+            {NAV.map((item) => {
+              const active = isCurrent(item.href) || !!item.items?.some((sub) => isCurrent(sub.href))
+              return (
+                <li key={item.label} className="relative" onMouseEnter={() => setOpen(item.items ? item.label : null)}>
+                  <a
+                    href={item.href}
+                    onFocus={() => setOpen(item.items ? item.label : null)}
+                    aria-expanded={item.items ? open === item.label : undefined}
+                    aria-current={active ? 'page' : undefined}
+                    className={`flex items-center whitespace-nowrap rounded-full px-3 py-2 text-[14.5px] font-medium transition-colors duration-300 2xl:px-3.5 ${
+                      pill
+                        ? open === item.label || active ? 'bg-paper text-ink' : 'text-ink/75 hover:text-ink'
+                        : open === item.label || active ? 'bg-white/10 text-white' : 'text-white/85 hover:text-white'
+                    }`}
+                  >
+                    {item.label}
+                    {item.badge && <NewBadge light={!pill} />}
+                    {item.items && <ChevronDown size={14} className={`ml-1 transition-transform duration-300 ${open === item.label ? 'rotate-180' : ''}`} />}
+                  </a>
+                  <AnimatePresence>{open === item.label && item.items && <Dropdown item={item} />}</AnimatePresence>
+                </li>
+              )
+            })}
           </ul>
 
           <div className="flex items-center gap-2">
@@ -153,8 +159,8 @@ export default function Navbar() {
                     {mAcc === item.label && item.items && (
                       <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
                         <div className="grid gap-1 pb-4">
-                          {item.items.map(({ label, icon: Icon }) => (
-                            <a key={label} href={item.href} onClick={() => setMobile(false)} className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[15px] text-muted">
+                          {item.items.map(({ label, href, icon: Icon }) => (
+                            <a key={label} href={href || item.href} onClick={() => setMobile(false)} className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[15px] text-muted">
                               <Icon size={16} className="text-brand-blue" /> {label}
                             </a>
                           ))}

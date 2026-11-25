@@ -6,7 +6,11 @@ import { CONTACT } from '../data/content'
 import { Logo, Reveal, EASE } from '../components/ui'
 
 /* ───────── CTA: compact brand-gradient bar — text left, buttons right ───────── */
-export function CTA() {
+export function CTA({
+  title = 'Ready to simplify your technology?',
+  sub = 'Free, no-obligation advice from a local team.',
+  primaryLabel = 'Book a free consultation',
+}) {
   const reduce = useReducedMotion()
   return (
     <section id="contact" className="relative" style={{ background: 'linear-gradient(to bottom, #ffffff 50%, #07101f 50%)' }}>
@@ -31,7 +35,7 @@ export function CTA() {
             />
             <motion.svg
               viewBox="0 0 40 40"
-              className="pointer-events-none absolute -bottom-16 left-[56%] hidden h-[200px] w-[200px] opacity-[0.12] lg:block"
+              className="pointer-events-none absolute -bottom-16 left-[56%] hidden h-[200px] w-[200px] opacity-[0.06] lg:block"
               animate={reduce ? undefined : { rotate: [0, 6, 0] }}
               transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
               aria-hidden="true"
@@ -43,16 +47,16 @@ export function CTA() {
             <div className="relative flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <h2 className="text-[30px] font-semibold leading-[1.1] tracking-[-0.03em] sm:text-[36px] md:text-[40px]">
-                  Ready to simplify your technology?
+                  {title}
                 </h2>
-                <p className="mt-2 text-[16.5px] text-white/85">Free, no-obligation advice from a local team.</p>
+                <p className="mt-2 text-[16.5px] text-white/85">{sub}</p>
               </div>
               <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
                 <a
                   href={`mailto:${CONTACT.email}`}
                   className="group inline-flex items-center justify-between gap-3 rounded-full bg-white py-2.5 pl-6 pr-2.5 text-[15px] font-semibold text-ink shadow-[0_10px_30px_-12px_rgba(7,16,31,.5)] transition-transform hover:-translate-y-0.5"
                 >
-                  Book a free consultation
+                  {primaryLabel}
                   <span className="grid h-8 w-8 place-items-center rounded-full bg-ink text-white">
                     <ArrowUpRight size={16} className="transition-transform duration-300 group-hover:rotate-45" />
                   </span>
@@ -74,9 +78,30 @@ export function CTA() {
 
 /* ───────── Footer ───────── */
 const COLS = [
-  { h: 'Services', links: ['Managed IT', 'Web Services', 'Infrastructure', 'AI Services'], href: '#services' },
-  { h: 'Company', links: ['About Us', 'Our Team', 'Contact Us'], href: '#why' },
-  { h: 'Legal', links: ['Privacy Policy', 'Terms of Service'], href: '#top' },
+  {
+    h: 'Services',
+    links: [
+      { label: 'Managed IT Services', href: '/managed-it-services' },
+      { label: 'Web Services', href: '/web-services' },
+      { label: 'Hardware & Infrastructure', href: '/hardware' },
+      { label: 'AI Services', href: '/ai-services' },
+    ],
+  },
+  {
+    h: 'Company',
+    links: [
+      { label: 'About Us', href: '/about-us' },
+      { label: 'Our Team', href: '/our-team' },
+      { label: 'Contact Us', href: '/contact-us' },
+    ],
+  },
+  {
+    h: 'Legal',
+    links: [
+      { label: 'Privacy Policy', href: '/#top' },
+      { label: 'Terms of Service', href: '/#top' },
+    ],
+  },
 ]
 
 function BrisbaneClock() {
@@ -126,9 +151,9 @@ export function Footer() {
               <p className="text-[13.5px] text-white/45">{c.h}</p>
               <ul className="mt-5 space-y-2.5">
                 {c.links.map((l) => (
-                  <li key={l}>
-                    <a href={c.href} className="text-[19px] font-semibold tracking-[-0.02em] text-white transition-colors hover:text-brand-cyan">
-                      {l}
+                  <li key={l.label}>
+                    <a href={l.href} className="text-[19px] font-semibold tracking-[-0.02em] text-white transition-colors hover:text-brand-cyan">
+                      {l.label}
                     </a>
                   </li>
                 ))}

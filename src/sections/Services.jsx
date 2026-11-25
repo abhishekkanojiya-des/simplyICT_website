@@ -65,7 +65,7 @@ function Card({ s, i, img, focus = 'center', desktop }) {
               </motion.li>
             ))}
           </ul>
-          <motion.a variants={v} href="#contact" className="group mt-8 inline-flex items-center gap-2 text-[15px] font-semibold text-ink">
+          <motion.a variants={v} href={s.href || '#contact'} className="group mt-8 inline-flex items-center gap-2 text-[15px] font-semibold text-ink">
             {s.cta}
             <span className="grid h-7 w-7 place-items-center rounded-full bg-ink text-white transition-colors group-hover:bg-brand-blue">
               <ArrowUpRight size={14} className="transition-transform duration-300 group-hover:rotate-45" />
