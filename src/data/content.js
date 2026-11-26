@@ -17,32 +17,31 @@ export const NAV = [
     label: 'Managed IT',
     href: '/managed-it-services',
     items: [
-      { label: 'Managed IT Services', href: '/managed-it-services', desc: '24/7 monitoring, helpdesk & strategy', icon: ServerCog },
-      { label: 'Co-Managed IT', href: '/managed-it-services#co-managed-it', desc: 'Back up your in-house IT team', icon: Users },
-      { label: 'Cybersecurity', href: '/managed-it-services#cybersecurity', desc: 'Protection, backups & recovery', icon: ShieldCheck },
-      { label: 'Cloud Services', href: '/managed-it-services#cloud-services', desc: 'Microsoft 365, Azure & migrations', icon: Cloud },
-      { label: 'On-site Support', href: '/managed-it-services#on-site-support', desc: 'Local technicians when you need them', icon: Wrench },
-      { label: 'IT Consulting & Strategy', href: '/managed-it-services#it-consulting', desc: 'Roadmaps and budgeting that make sense', icon: Compass },
+      { label: 'Co-Managed IT', href: '/managed-it-services/co-managed-it', desc: 'Back up your in-house IT team', icon: Users },
+      { label: 'Cybersecurity', href: '/managed-it-services/cybersecurity', desc: 'Protection, backups & recovery', icon: ShieldCheck },
+      { label: 'Cloud Services', href: '/managed-it-services/cloud-services', desc: 'Microsoft 365, Azure & migrations', icon: Cloud },
+      { label: 'On-site Support', href: '/managed-it-services/on-site-support', desc: 'Local technicians when you need them', icon: Wrench },
+      { label: 'IT Consulting & Strategy', href: '/managed-it-services/it-consulting', desc: 'Roadmaps and budgeting that make sense', icon: Compass },
     ],
   },
   {
     label: 'Web Services',
     href: '/web-services',
     items: [
-      { label: 'Web Design', href: '/web-services#web-design', desc: 'Fast WordPress sites that convert', icon: Code2 },
-      { label: 'Hosting & Maintenance', href: '/web-services#hosting-maintenance', desc: 'Secure hosting, updates & daily backups', icon: Globe },
-      { label: 'SEO & Performance', href: '/web-services#seo-performance', desc: 'Get found and load fast', icon: Gauge },
-      { label: 'E-Commerce', href: '/web-services#e-commerce', desc: 'Online stores that sell', icon: ShoppingCart },
+      { label: 'Web Design', href: '/web-services/web-design', desc: 'Fast WordPress sites that convert', icon: Code2 },
+      { label: 'Hosting & Maintenance', href: '/web-services/hosting-maintenance', desc: 'Secure hosting, updates & daily backups', icon: Globe },
+      { label: 'SEO & Performance', href: '/web-services/seo-performance', desc: 'Get found and load fast', icon: Gauge },
+      { label: 'E-Commerce', href: '/web-services/e-commerce', desc: 'Online stores that sell', icon: ShoppingCart },
     ],
   },
   {
     label: 'Infrastructure',
     href: '/hardware',
     items: [
-      { label: 'Servers & Storage', href: '/hardware#servers-storage', desc: 'Reliable on-prem & hybrid servers', icon: HardDrive },
-      { label: 'Networking', href: '/hardware#networking', desc: 'Switching, routing & firewalls', icon: Router },
-      { label: 'Workstations', href: '/hardware#workstations', desc: 'Supplied, imaged & managed', icon: Monitor },
-      { label: 'WiFi Installation', href: '/hardware#wifi-installation', desc: 'Business-grade wireless coverage', icon: Wifi },
+      { label: 'Servers & Storage', href: '/hardware/servers-storage', desc: 'Reliable on-prem & hybrid servers', icon: HardDrive },
+      { label: 'Networking', href: '/hardware/networking', desc: 'Switching, routing & firewalls', icon: Router },
+      { label: 'Workstations', href: '/hardware/workstations', desc: 'Supplied, imaged & managed', icon: Monitor },
+      { label: 'WiFi Installation', href: '/hardware/wifi-installation', desc: 'Business-grade wireless coverage', icon: Wifi },
     ],
   },
   {
@@ -50,19 +49,19 @@ export const NAV = [
     href: '/ai-services',
     badge: 'New',
     items: [
-      { label: 'AI Strategy & Consulting', href: '/ai-services#ai-strategy', desc: 'Find where AI pays off', icon: BrainCircuit },
-      { label: 'Microsoft Copilot Rollout', href: '/ai-services#copilot', desc: 'Deploy & train your team', icon: Sparkles },
-      { label: 'AI Chatbots & Virtual Agents', href: '/ai-services#chatbots', desc: '24/7 assistants on your knowledge', icon: Bot },
-      { label: 'Workflow Automation', href: '/ai-services#automation', desc: 'Remove repetitive admin', icon: Workflow },
-      { label: 'AI Data & Insights', href: '/ai-services#data-insights', desc: 'Dashboards, forecasts & answers', icon: BarChart3 },
-      { label: 'AI Security & Governance', href: '/ai-services#ai-governance', desc: 'Safe, compliant AI use', icon: Lock },
+      { label: 'AI Strategy & Consulting', href: '/ai-services/ai-strategy', desc: 'Find where AI pays off', icon: BrainCircuit },
+      { label: 'Microsoft Copilot Rollout', href: '/ai-services/copilot', desc: 'Deploy & train your team', icon: Sparkles },
+      { label: 'AI Chatbots & Virtual Agents', href: '/ai-services/chatbots', desc: '24/7 assistants on your knowledge', icon: Bot },
+      { label: 'Workflow Automation', href: '/ai-services/automation', desc: 'Remove repetitive admin', icon: Workflow },
+      { label: 'AI Data & Insights', href: '/ai-services/data-insights', desc: 'Dashboards, forecasts & answers', icon: BarChart3 },
+      { label: 'AI Security & Governance', href: '/ai-services/ai-governance', desc: 'Safe, compliant AI use', icon: Lock },
     ],
   },
   {
     label: 'About',
     href: '/about-us',
     items: [
-      { label: 'About Us', href: '/about-us', desc: '30+ years of making tech human', icon: Info },
+      { label: 'About Us', href: '/about-us', desc: '30+ years of experience', icon: Info },
       { label: 'Our Team', href: '/our-team', desc: 'Meet the people behind the support', icon: UsersRound },
     ],
   },
@@ -115,6 +114,7 @@ export const SERVICES = [
 export const MANAGED_IT_SERVICES = [
   {
     id: 'co-managed-it',
+    href: '/managed-it-services/co-managed-it',
     icon: Users,
     title: 'Co-Managed IT',
     desc: 'Extend your existing IT team or provider with our specialists — extra capacity and skills, without the cost of new hires.',
@@ -122,6 +122,7 @@ export const MANAGED_IT_SERVICES = [
   },
   {
     id: 'cybersecurity',
+    href: '/managed-it-services/cybersecurity',
     icon: ShieldCheck,
     title: 'Cybersecurity',
     desc: 'Layered protection, honest audits and tested backups — so a threat never becomes a business-stopping event.',
@@ -129,6 +130,7 @@ export const MANAGED_IT_SERVICES = [
   },
   {
     id: 'cloud-services',
+    href: '/managed-it-services/cloud-services',
     icon: Cloud,
     title: 'Cloud Services',
     desc: 'Microsoft 365, Azure and modern cloud — planned, migrated and managed, without the disruption.',
@@ -136,6 +138,7 @@ export const MANAGED_IT_SERVICES = [
   },
   {
     id: 'on-site-support',
+    href: '/managed-it-services/on-site-support',
     icon: Wrench,
     title: 'On-site Support',
     desc: 'When you need us on-site, we’re there — guaranteed response times and engineers who fix it right.',
@@ -143,6 +146,7 @@ export const MANAGED_IT_SERVICES = [
   },
   {
     id: 'it-consulting',
+    href: '/managed-it-services/it-consulting',
     icon: Compass,
     title: 'IT Consulting & Strategy',
     desc: 'A practical technology roadmap and honest advice — so every IT dollar works toward your goals.',
@@ -153,6 +157,7 @@ export const MANAGED_IT_SERVICES = [
 export const WEB_SERVICES = [
   {
     id: 'web-design',
+    href: '/web-services/web-design',
     icon: Code2,
     title: 'Web Design',
     desc: 'Custom WordPress sites that look premium, load fast, and are simple for your team to update.',
@@ -160,6 +165,7 @@ export const WEB_SERVICES = [
   },
   {
     id: 'hosting-maintenance',
+    href: '/web-services/hosting-maintenance',
     icon: Globe,
     title: 'Hosting & Maintenance',
     desc: 'Managed hosting with daily backups, security monitoring and updates — so your site stays online and fast.',
@@ -167,6 +173,7 @@ export const WEB_SERVICES = [
   },
   {
     id: 'seo-performance',
+    href: '/web-services/seo-performance',
     icon: Gauge,
     title: 'SEO & Performance',
     desc: 'On-page, technical and local SEO with clear reporting — so customers find you before your competitors.',
@@ -174,6 +181,7 @@ export const WEB_SERVICES = [
   },
   {
     id: 'e-commerce',
+    href: '/web-services/e-commerce',
     icon: ShoppingCart,
     title: 'E-Commerce',
     desc: 'Secure WooCommerce stores with payments, inventory and support — built to sell, and built to last.',
@@ -184,6 +192,7 @@ export const WEB_SERVICES = [
 export const HARDWARE_SERVICES = [
   {
     id: 'servers-storage',
+    href: '/hardware/servers-storage',
     icon: HardDrive,
     title: 'Servers & Storage',
     desc: 'Servers, storage and backup systems — specified, deployed and supported so your data is safe and fast.',
@@ -191,6 +200,7 @@ export const HARDWARE_SERVICES = [
   },
   {
     id: 'networking',
+    href: '/hardware/networking',
     icon: Router,
     title: 'Networking',
     desc: 'Fast, secure networks — designed, installed and supported for offices that depend on them.',
@@ -198,6 +208,7 @@ export const HARDWARE_SERVICES = [
   },
   {
     id: 'workstations',
+    href: '/hardware/workstations',
     icon: Monitor,
     title: 'Workstations',
     desc: 'The right PCs, laptops and devices for every role — supplied, standardised and supported.',
@@ -205,6 +216,7 @@ export const HARDWARE_SERVICES = [
   },
   {
     id: 'wifi-installation',
+    href: '/hardware/wifi-installation',
     icon: Wifi,
     title: 'WiFi Installation',
     desc: 'Business Wi-Fi that reaches everywhere — surveyed, installed and tuned so dead zones are history.',
@@ -217,6 +229,7 @@ export const HARDWARE_SERVICES = [
 export const AI_SERVICES = [
   {
     id: 'ai-strategy',
+    href: '/ai-services/ai-strategy',
     icon: BrainCircuit,
     title: 'AI Strategy & Consulting',
     desc: 'Find where AI delivers real return in your business, with a clear, costed roadmap.',
@@ -224,6 +237,7 @@ export const AI_SERVICES = [
   },
   {
     id: 'copilot',
+    href: '/ai-services/copilot',
     icon: Sparkles,
     title: 'Microsoft Copilot Rollout',
     desc: 'Deploy, configure and train your team on Copilot for Microsoft 365.',
@@ -231,6 +245,7 @@ export const AI_SERVICES = [
   },
   {
     id: 'chatbots',
+    href: '/ai-services/chatbots',
     icon: Bot,
     title: 'AI Chatbots & Virtual Agents',
     desc: '24/7 website and internal assistants trained on your own knowledge.',
@@ -238,6 +253,7 @@ export const AI_SERVICES = [
   },
   {
     id: 'automation',
+    href: '/ai-services/automation',
     icon: Workflow,
     title: 'Workflow Automation',
     desc: 'Automate repetitive tasks across email, documents, CRM and accounts.',
@@ -245,6 +261,7 @@ export const AI_SERVICES = [
   },
   {
     id: 'data-insights',
+    href: '/ai-services/data-insights',
     icon: BarChart3,
     title: 'AI Data & Insights',
     desc: 'Turn your business data into dashboards, forecasts and plain answers.',
@@ -252,6 +269,7 @@ export const AI_SERVICES = [
   },
   {
     id: 'ai-governance',
+    href: '/ai-services/ai-governance',
     icon: Lock,
     title: 'AI Security & Governance',
     desc: 'Policies, data protection and safe-use controls for every AI tool.',

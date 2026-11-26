@@ -134,7 +134,7 @@ export function Process({ bg = 'bg-white', card = 'bg-[#f7f9fc]' }) {
         </div>
 
         <Reveal delay={0.2} className="mt-12 flex justify-center">
-          <Button href="#contact">Book a free consultation</Button>
+          <Button href="/contact-us">Book a free consultation</Button>
         </Reveal>
       </div>
     </section>

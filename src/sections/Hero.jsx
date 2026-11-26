@@ -75,7 +75,7 @@ export default function Hero() {
             Managed IT, websites, infrastructure and AI — delivered and supported by one Australian team.
           </motion.p>
           <motion.div {...fade(0.44)} className="mt-10 flex flex-wrap gap-3">
-            <Button href="#contact">Book a free consultation</Button>
+            <Button href="/contact-us">Book a free consultation</Button>
             <Button href="#services" variant="ghostDark">Explore services</Button>
           </motion.div>
         </div>

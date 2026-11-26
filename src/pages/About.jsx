@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useTransform } from 'framer-motion'
+import { motion, useInView, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import {
   ArrowUpRight, Check, Cpu, Handshake, ShieldCheck,
 } from 'lucide-react'
@@ -89,7 +89,7 @@ function Story() {
               style={{ background: 'var(--brand-gradient)' }}
             >
               <Counter value={30} suffix="+" className="block text-[44px] font-semibold leading-none tracking-[-0.04em] md:text-[52px]" />
-              <p className="mt-1.5 text-[13px] font-medium text-white/90">Years making<br />tech human</p>
+              <p className="mt-1.5 text-[13px] font-medium text-white/90">Years in business</p>
             </motion.div>
           </Reveal>
 
@@ -119,7 +119,7 @@ function Story() {
               </div>
             </Reveal>
             <Reveal delay={0.24} className="mt-9">
-              <Button href="#contact">Talk to our team</Button>
+              <Button href="/contact-us">Talk to our team</Button>
             </Reveal>
           </div>
         </div>
@@ -145,33 +145,12 @@ function Story() {
   )
 }
 
-/* ───────── Values: pinned dark section — one card arrives per scroll step ───────── */
-function useMediaQuery(query) {
-  const [match, setMatch] = useState(() => typeof window !== 'undefined' && window.matchMedia(query).matches)
-  useEffect(() => {
-    const m = window.matchMedia(query)
-    const on = () => setMatch(m.matches)
-    m.addEventListener('change', on)
-    return () => m.removeEventListener('change', on)
-  }, [query])
-  return match
-}
-
-/* each card owns one step of the pinned scroll: [start, end] of the progress range */
-const valueRange = (i, n) => {
-  const step = 0.9 / n // leave the last 10% as a pause with everything visible
-  return [i * step, i * step + step * 0.75]
-}
-
-function ValueCard({ value, index, total, progress, pin }) {
+/* ───────── Values: dark section, three cards ─────────
+   Cards use the same Reveal entrance as every other section on the site —
+   this block used to pin for 310vh and deal one card per scroll step. */
+function ValueCard({ value, index }) {
   const reduce = useReducedMotion()
   const { icon: Icon, title, desc } = value
-  const range = valueRange(index, total)
-  const y = useTransform(progress, range, [180, 0])
-  const opacity = useTransform(progress, range, [0, 1])
-  const scale = useTransform(progress, range, [0.92, 1])
-  const blurPx = useTransform(progress, range, [14, 0])
-  const filter = useTransform(blurPx, (v) => `blur(${v}px)`)
   const onMouseMove = (e) => {
     if (reduce) return
     const r = e.currentTarget.getBoundingClientRect()
@@ -179,86 +158,74 @@ function ValueCard({ value, index, total, progress, pin }) {
     e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`)
   }
 
-  const card = (
-    <article
-      onMouseMove={onMouseMove}
-      className="group relative flex h-full min-h-[300px] flex-col overflow-hidden rounded-[26px] border border-white/10 bg-white/[0.04] p-7 backdrop-blur transition-[transform,border-color,background-color] duration-500 hover:-translate-y-1.5 hover:border-white/20 hover:bg-white/[0.06] md:p-9"
-    >
-      <span
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        aria-hidden="true"
-        style={{ background: 'radial-gradient(380px circle at var(--mx, 50%) var(--my, 0%), rgba(59,130,246,.22), transparent 60%)' }}
-      />
-      <span
-        className="pointer-events-none absolute inset-x-8 top-0 h-px opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        aria-hidden="true"
-        style={{ background: 'linear-gradient(90deg, transparent, rgba(34,211,238,.9), transparent)' }}
-      />
-      <div className="relative flex items-start justify-between">
-        {/* outline icon — the gradient fill fades in on hover only */}
-        <span className="relative grid h-14 w-14 place-items-center overflow-hidden rounded-2xl border border-white/15 text-brand-cyan transition-[border-color,color,box-shadow,transform] duration-500 group-hover:-rotate-6 group-hover:scale-110 group-hover:border-transparent group-hover:text-white group-hover:shadow-[0_14px_30px_-14px_rgba(59,130,246,.9)]">
-          <span className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" style={{ background: 'var(--brand-gradient)' }} />
-          <Icon size={24} className="relative" />
-        </span>
-        <span className="text-[56px] font-light leading-none tracking-[-0.04em] text-white/10">0{index + 1}</span>
-      </div>
-      <h3 className="relative mt-auto pt-12 text-[26px] font-semibold tracking-[-0.03em] text-white md:text-[30px]">{title}</h3>
-      <p className="relative mt-3 text-[16px] leading-relaxed text-white/60">{desc}</p>
-    </article>
-  )
-
-  if (!pin) return <Reveal delay={index * 0.1} className="h-full">{card}</Reveal>
   return (
-    <motion.div style={{ y, opacity, scale, filter }} className="h-full will-change-transform">
-      {card}
-    </motion.div>
+    <Reveal delay={index * 0.1} className="h-full">
+      <article
+        onMouseMove={onMouseMove}
+        className="group relative flex h-full min-h-[300px] flex-col overflow-hidden rounded-[26px] border border-white/10 bg-white/[0.04] p-7 backdrop-blur transition-[transform,border-color,background-color] duration-500 hover:-translate-y-1.5 hover:border-white/20 hover:bg-white/[0.06] md:p-9"
+      >
+        <span
+          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          aria-hidden="true"
+          style={{ background: 'radial-gradient(380px circle at var(--mx, 50%) var(--my, 0%), rgba(59,130,246,.22), transparent 60%)' }}
+        />
+        <span
+          className="pointer-events-none absolute inset-x-8 top-0 h-px opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+          aria-hidden="true"
+          style={{ background: 'linear-gradient(90deg, transparent, rgba(34,211,238,.9), transparent)' }}
+        />
+        <div className="relative flex items-start justify-between">
+          {/* outline icon — the gradient fill fades in on hover only */}
+          <span className="relative grid h-14 w-14 place-items-center overflow-hidden rounded-2xl border border-white/15 text-brand-cyan transition-[border-color,color,box-shadow,transform] duration-500 group-hover:-rotate-6 group-hover:scale-110 group-hover:border-transparent group-hover:text-white group-hover:shadow-[0_14px_30px_-14px_rgba(59,130,246,.9)]">
+            <span className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" style={{ background: 'var(--brand-gradient)' }} />
+            <Icon size={24} className="relative" />
+          </span>
+          <span className="text-[56px] font-light leading-none tracking-[-0.04em] text-white/10">0{index + 1}</span>
+        </div>
+        <h3 className="relative mt-auto pt-12 text-[26px] font-semibold tracking-[-0.03em] text-white md:text-[30px]">{title}</h3>
+        <p className="relative mt-3 text-[16px] leading-relaxed text-white/60">{desc}</p>
+      </article>
+    </Reveal>
   )
 }
 
 function Values() {
   const reduce = useReducedMotion()
-  const desktop = useMediaQuery('(min-width: 768px)')
-  const pin = desktop && !reduce
-  const section = useRef(null)
-  const { scrollYProgress } = useScroll({ target: section, offset: ['start start', 'end end'] })
-  const n = VALUES.length
 
   return (
-    <section ref={section} className="relative bg-navy text-white" style={pin ? { height: `${100 + n * 70}vh` } : undefined}>
-      <div className={pin ? 'sticky top-0 flex h-screen items-center overflow-hidden' : 'relative overflow-hidden py-20'}>
-        <div
-          className="pointer-events-none absolute inset-0"
-          aria-hidden="true"
-          style={{
-            background:
-              'radial-gradient(45% 60% at 0% 100%, rgba(59,130,246,.22), transparent 70%), radial-gradient(40% 55% at 100% 0%, rgba(34,211,238,.14), transparent 70%)',
-          }}
-        />
-        <HeroDots reduce={!!reduce} gap={30} boost={0.5} />
+    <section className="relative overflow-hidden bg-navy py-20 text-white md:py-28">
+      <div
+        className="pointer-events-none absolute inset-0"
+        aria-hidden="true"
+        style={{
+          background:
+            'radial-gradient(45% 60% at 0% 100%, rgba(59,130,246,.22), transparent 70%), radial-gradient(40% 55% at 100% 0%, rgba(34,211,238,.14), transparent 70%)',
+        }}
+      />
+      <HeroDots reduce={!!reduce} gap={30} boost={0.5} />
 
-        <div className={`container-site relative w-full ${pin ? 'pt-16' : ''}`}>
-          <div className="grid items-end gap-6 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
-            <div>
-              <Eyebrow>Our values</Eyebrow>
-              <BlurText
-                as="h2"
-                text="The principles behind every job"
-                className="h-display mt-4 max-w-[14ch] text-[36px] !text-white sm:text-[46px] md:text-[54px]"
-              />
-            </div>
-            <Reveal delay={0.15}>
-              <p className="max-w-md text-[16.5px] leading-relaxed text-white/60 lg:ml-auto">
-                Three simple commitments guide how we work with every client — whether it’s a quick fix or a five-year
-                technology plan.
-              </p>
-            </Reveal>
+      <div className="container-site relative w-full">
+        <div className="grid items-end gap-6 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
+          <div>
+            <Eyebrow>Our values</Eyebrow>
+            <BlurText
+              as="h2"
+              text="The principles behind every job"
+              className="h-display mt-4 max-w-[14ch] text-[36px] !text-white sm:text-[46px] md:text-[54px]"
+            />
           </div>
+          <Reveal delay={0.15}>
+            <p className="max-w-md text-[16.5px] leading-relaxed text-white/60 lg:ml-auto">
+              Three simple commitments guide how we work with every client — whether it’s a quick fix or a five-year
+              technology plan.
+            </p>
+          </Reveal>
+        </div>
 
-          <div className="mt-12 grid gap-4 md:grid-cols-3">
-            {VALUES.map((v, i) => (
-              <ValueCard key={v.title} value={v} index={i} total={n} progress={scrollYProgress} pin={pin} />
-            ))}
-          </div>
+        <div className="mt-12 grid gap-4 md:grid-cols-3">
+          {VALUES.map((v, i) => (
+            <ValueCard key={v.title} value={v} index={i} />
+          ))}
         </div>
       </div>
     </section>
@@ -335,7 +302,7 @@ function FlipCard({ service, img, focus }) {
               ))}
             </ul>
             <a
-              href={href || '#contact'}
+              href={href || '/contact-us'}
               className="group/link mt-auto inline-flex w-fit items-center gap-2 pt-5 text-[14.5px] font-semibold text-white"
             >
               {cta || 'Learn more'}
@@ -385,48 +352,81 @@ function WhatWeDo() {
 
 /* ───────── Technology we work with: copy left, one cycling logo grid right ───────── */
 const TECH_SLOTS = 12
-const TECH_SWAP_MS = 3200
+const WAVE_STEP = 0.055 // seconds between one cell and the next
+const CELL_SEC = 0.5 // how long a single cell takes to blur away, or arrive
+const PHASE_MS = Math.round((WAVE_STEP * (TECH_SLOTS - 1) + CELL_SEC) * 1000)
+const HOLD_MS = 3600 // how long a full set stays put
 
-/* Every few seconds the whole grid moves on to the next set of logos — all cells at once. */
+/* The grid turns over in two waves: every cell blurs away in a staggered
+   sweep, the set is swapped while the grid is empty, then the new logos
+   arrive on the same sweep. Swapping behind the blur is the point — the old
+   version cross-faded each cell on its own, so every tile flashed white
+   between sets. */
 function useCyclingTech(active) {
   const [offset, setOffset] = useState(0)
+  const [shown, setShown] = useState(true)
   const total = TECH_LOGOS.length
 
   useEffect(() => {
-    if (!active || total <= TECH_SLOTS) return
-    const id = window.setInterval(() => setOffset((o) => (o + TECH_SLOTS) % total), TECH_SWAP_MS)
-    return () => window.clearInterval(id)
+    if (!active || total <= TECH_SLOTS) {
+      setShown(true)
+      return
+    }
+    let swap
+    const tick = window.setInterval(() => {
+      setShown(false) // wave out
+      swap = window.setTimeout(() => {
+        setOffset((o) => (o + TECH_SLOTS) % total) // swap while nothing is visible
+        setShown(true) // wave back in
+      }, PHASE_MS)
+    }, HOLD_MS + PHASE_MS * 2)
+
+    return () => {
+      window.clearInterval(tick)
+      window.clearTimeout(swap)
+      setShown(true)
+    }
   }, [active, total])
 
-  // cell i shows logo (offset + i), wrapping round the list — every cell changes on each step
-  return Array.from({ length: TECH_SLOTS }, (_, i) => (offset + i) % total)
+  // cell i shows logo (offset + i), wrapping round the list
+  return {
+    slots: Array.from({ length: TECH_SLOTS }, (_, i) => (offset + i) % total),
+    shown,
+  }
 }
 
-function TechCell({ tech }) {
+function TechCell({ tech, shown, delay }) {
   const reduce = useReducedMotion()
   const { name, viewBox, body, color } = tech
+
   return (
     <li className="group relative h-[116px] bg-white transition-colors duration-300 hover:bg-paper sm:h-[132px]">
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={name}
-          initial={reduce ? { opacity: 0 } : { opacity: 0, y: 10, scale: 0.94, filter: 'blur(10px)' }}
-          animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-          exit={reduce ? { opacity: 0 } : { opacity: 0, y: -10, scale: 0.96, filter: 'blur(10px)' }}
-          transition={{ duration: 0.55, ease: EASE }}
-          className="absolute inset-0 flex flex-col items-center justify-center px-2 text-center"
-        >
-          {/* static, trusted SVG markup from src/data/techLogos.js */}
-          <svg
-            viewBox={viewBox}
-            aria-hidden="true"
-            className="h-8 w-8 transition-transform duration-500 group-hover:scale-110 sm:h-9 sm:w-9"
-            style={color ? { color } : undefined}
-            dangerouslySetInnerHTML={{ __html: body }}
-          />
-          <span className="mt-2.5 text-[12.5px] font-semibold leading-tight text-ink/80 sm:text-[14px]">{name}</span>
-        </motion.div>
-      </AnimatePresence>
+      {/* one persistent element per cell: the logo inside it changes while the
+          cell is blurred out, so there is never an empty white tile */}
+      <motion.div
+        initial={false}
+        animate={shown ? 'in' : 'out'}
+        variants={
+          reduce
+            ? { in: { opacity: 1 }, out: { opacity: 0 } }
+            : {
+                in: { opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' },
+                out: { opacity: 0, scale: 0.9, y: -10, filter: 'blur(12px)' },
+              }
+        }
+        transition={reduce ? { duration: 0.25 } : { duration: CELL_SEC, ease: EASE, delay }}
+        className="absolute inset-0 flex flex-col items-center justify-center px-2 text-center will-change-[transform,filter,opacity]"
+      >
+        {/* static, trusted SVG markup from src/data/techLogos.js */}
+        <svg
+          viewBox={viewBox}
+          aria-hidden="true"
+          className="h-8 w-8 transition-transform duration-500 group-hover:scale-110 sm:h-9 sm:w-9"
+          style={color ? { color } : undefined}
+          dangerouslySetInnerHTML={{ __html: body }}
+        />
+        <span className="mt-2.5 text-[12.5px] font-semibold leading-tight text-ink/80 sm:text-[14px]">{name}</span>
+      </motion.div>
     </li>
   )
 }
@@ -435,7 +435,7 @@ function TechStrip() {
   const reduce = useReducedMotion()
   const grid = useRef(null)
   const inView = useInView(grid, { amount: 0.3 })
-  const slots = useCyclingTech(inView && !reduce)
+  const { slots, shown } = useCyclingTech(inView && !reduce)
 
   return (
     <section className="section relative overflow-hidden bg-white">
@@ -457,11 +457,11 @@ function TechStrip() {
               <p className="mt-5 max-w-md text-[17px] leading-relaxed text-muted">
                 We give independent advice and recommend what genuinely fits your business — then set it up, secure it
                 and support it. From Microsoft 365 and Azure to the firewalls, servers and Wi-Fi that keep everything
-                running.
+                running, the frameworks we build on, and the AI tools we help you use safely.
               </p>
             </Reveal>
             <Reveal delay={0.2} className="mt-8">
-              <Button href="#contact">Talk to our team</Button>
+              <Button href="/contact-us">Talk to our team</Button>
             </Reveal>
           </div>
 
@@ -472,7 +472,12 @@ function TechStrip() {
               className="grid grid-cols-3 gap-px overflow-hidden rounded-[24px] border border-line bg-line sm:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4"
             >
               {slots.map((logoIndex, slot) => (
-                <TechCell key={slot} tech={TECH_LOGOS[logoIndex]} />
+                <TechCell
+                  key={slot}
+                  tech={TECH_LOGOS[logoIndex]}
+                  shown={shown}
+                  delay={slot * WAVE_STEP}
+                />
               ))}
             </ul>
             {/* full list for screen readers and search engines — the grid only shows some at a time */}

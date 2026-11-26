@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
-  ArrowUpRight, CalendarCheck, Check, Clock, FileText, Mail, MapPin, MessageSquareReply, Minus, Navigation, Phone,
-  Plus, Send,
+  ArrowUpRight, CalendarCheck, Check, FileText, Mail, MapPin, MessageSquareReply, Minus, Navigation, Phone,
+  Plus, Send, ShieldCheck,
 } from 'lucide-react'
 import { PageHero } from '../components/ServicePage'
-import { BlurText, EASE, Eyebrow, Reveal, ScrollProgress } from '../components/ui'
-import HeroDots from '../components/HeroDots'
+import { BlurText, Counter, EASE, Eyebrow, Reveal, ScrollProgress } from '../components/ui'
 import { CTA } from '../sections/CTAFooter'
-import { CONTACT } from '../data/content'
+import { CONTACT, STATS } from '../data/content'
 import heroImg from '../assets/managed/helpdesk.jpg'
+import teamImg from '../assets/team/hero.jpg'
 
 /* ─────────────────────────────────────────────────────────────
    Contact Us — content mirrors simplyict.com.au/contact-us,
@@ -46,157 +46,186 @@ const HERO = {
   },
 }
 
-/* ───────── Live "open now" status (Brisbane time, Mon–Fri 8:30–17:30) ───────── */
-function useOpenStatus() {
-  const compute = () => {
-    const parts = Object.fromEntries(
-      new Intl.DateTimeFormat('en-AU', { timeZone: 'Australia/Brisbane', weekday: 'short', hour: 'numeric', minute: 'numeric', hour12: false })
-        .formatToParts(new Date())
-        .map((p) => [p.type, p.value]),
-    )
-    const minutes = (Number(parts.hour) % 24) * 60 + Number(parts.minute)
-    const weekday = !['Sat', 'Sun'].includes(parts.weekday)
-    return weekday && minutes >= 8 * 60 + 30 && minutes < 17 * 60 + 30
-  }
-  const [open, setOpen] = useState(compute)
-  useEffect(() => {
-    const id = window.setInterval(() => setOpen(compute()), 60_000)
-    return () => window.clearInterval(id)
-  }, [])
-  return open
-}
-
-function OpenBadge({ open, dark = false }) {
-  return (
-    <span
-      className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[12px] font-semibold ${
-        open
-          ? dark ? 'border border-emerald-400/25 bg-emerald-400/10 text-emerald-300' : 'bg-emerald-50 text-emerald-700'
-          : dark ? 'border border-white/15 bg-white/[0.06] text-white/70' : 'bg-paper text-muted'
-      }`}
-    >
-      <span className="relative flex h-2 w-2">
-        {open && <span className="ping-soft absolute inline-flex h-full w-full rounded-full bg-emerald-400" />}
-        <span className={`relative inline-flex h-2 w-2 rounded-full ${open ? 'bg-emerald-400' : 'bg-slate-400'}`} />
-      </span>
-      {open ? 'Open now' : 'Closed — we’ll reply next business day'}
-    </span>
-  )
-}
-
 /* ───────── Details column ───────── */
-function Details({ open }) {
-  const reduce = useReducedMotion()
-  const items = [
-    { icon: Phone, label: 'Phone', value: CONTACT.phone, href: CONTACT.phoneHref },
-    { icon: Mail, label: 'Email', value: CONTACT.email, href: `mailto:${CONTACT.email}` },
-    { icon: MapPin, label: 'Location', value: 'North Lakes, QLD 4509, Australia', href: DIRECTIONS, cta: 'Get directions', external: true },
-    { icon: Clock, label: 'Hours', value: 'Monday – Friday, 8:30am – 5:30pm' },
+function Details() {
+  const pills = [
+    { icon: Phone, label: CONTACT.phone, href: CONTACT.phoneHref },
+    { icon: Mail, label: CONTACT.email, href: `mailto:${CONTACT.email}` },
   ]
+  const credentials = [STATS[0], STATS[1], STATS[3]]
+
   return (
     <div>
       <Eyebrow>Our details</Eyebrow>
-      <BlurText as="h2" text="Talk to a real person" className="h-display mt-4 max-w-[14ch] text-[34px] sm:text-[42px] xl:text-[46px]" />
-      <Reveal delay={0.1}>
-        <p className="mt-4 max-w-md text-[17px] leading-relaxed text-muted">
-          Support, a quote or just some honest advice — pick whichever way suits you best.
-        </p>
+      <BlurText
+        as="h2"
+        text="Talk to a real person"
+        className="h-display mt-4 max-w-[12ch] text-[38px] sm:text-[48px] xl:text-[56px]"
+      />
+
+      {/* the two ways most people actually get in touch */}
+      <Reveal delay={0.1} className="mt-7">
+        <div className="flex flex-wrap gap-3">
+          {pills.map(({ icon: Icon, label, href }) => (
+            <a
+              key={label}
+              href={href}
+              className="group inline-flex items-center gap-3 rounded-full border border-line bg-white py-2.5 pl-3 pr-6 text-[15px] font-semibold text-ink transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:border-brand-blue/30 hover:shadow-[0_16px_32px_-22px_rgba(59,130,246,.6)]"
+            >
+              <span className="relative grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full border border-line text-brand-blue transition-[border-color,color] duration-500 group-hover:border-transparent group-hover:text-white">
+                <span
+                  className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  style={{ background: 'var(--brand-gradient)' }}
+                />
+                <Icon size={16} className="relative" />
+              </span>
+              <span className="break-all">{label}</span>
+            </a>
+          ))}
+        </div>
       </Reveal>
 
-      <ul className="mt-8 space-y-3">
-        {items.map(({ icon: Icon, label, value, href, cta, external }, i) => {
-          const inner = (
-            <>
-              <span className="relative grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl border border-line text-brand-blue transition-[border-color,color] duration-500 group-hover:border-transparent group-hover:text-white">
-                <span className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" style={{ background: 'var(--brand-gradient)' }} />
-                <Icon size={18} className="relative" />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[12.5px] text-muted">{label}</span>
-                <span className="block break-words text-[15.5px] font-semibold text-ink">{value}</span>
-              </span>
-              {href && (
-                <span className="hidden shrink-0 items-center gap-1 text-[13px] font-semibold text-brand-deep sm:inline-flex">
-                  {cta}
-                  <ArrowUpRight size={15} className="transition-transform duration-300 group-hover:rotate-45" />
-                </span>
-              )}
-            </>
-          )
-          const cls = 'group flex items-center gap-4 rounded-2xl border border-line bg-white p-4 transition-[border-color,box-shadow,transform] duration-300'
-          return (
-            <Reveal as="li" key={label} delay={0.08 + i * 0.06}>
-              {href ? (
-                <a
-                  href={href}
-                  target={external ? '_blank' : undefined}
-                  rel={external ? 'noopener noreferrer' : undefined}
-                  className={`${cls} hover:-translate-y-0.5 hover:border-brand-blue/30 hover:shadow-[0_16px_32px_-22px_rgba(59,130,246,.6)]`}
-                >
-                  {inner}
-                </a>
-              ) : (
-                <div className={cls}>{inner}</div>
-              )}
-            </Reveal>
-          )
-        })}
-      </ul>
-
-      {/* Prefer to talk? */}
-      <Reveal delay={0.3} className="mt-5">
-        <div className="relative isolate overflow-hidden rounded-[24px] bg-navy p-6 text-white md:p-7">
-          <div
-            className="pointer-events-none absolute inset-0 -z-10"
-            aria-hidden="true"
-            style={{ background: 'radial-gradient(60% 90% at 100% 0%, rgba(34,211,238,.2), transparent 70%), radial-gradient(60% 90% at 0% 100%, rgba(59,130,246,.3), transparent 70%)' }}
+      {/* the people who answer */}
+      <Reveal delay={0.2} className="mt-7">
+        <div className="relative max-w-[400px] overflow-hidden rounded-[20px] border border-line">
+          <img
+            src={teamImg}
+            alt="The Simply ICT team at their North Lakes office"
+            loading="lazy"
+            className="aspect-[16/10] w-full object-cover object-[62%_50%]"
           />
-          <HeroDots reduce={!!reduce} gap={18} boost={0.6} />
-          <div className="relative">
-            <OpenBadge open={open} dark />
-            <p className="mt-4 text-[22px] font-semibold tracking-[-0.02em]">Prefer to talk?</p>
-            <p className="mt-1.5 text-[15px] leading-relaxed text-white/65">
-              Our phone lines are answered Monday to Friday, 8:30am – 5:30pm.
-            </p>
-            <a
-              href={CONTACT.phoneHref}
-              className="group mt-5 inline-flex items-center gap-3 rounded-full bg-white py-2 pl-2 pr-5 text-[15px] font-semibold text-ink transition-transform duration-300 hover:-translate-y-0.5"
-            >
-              <span className="grid h-9 w-9 place-items-center rounded-full text-white" style={{ background: 'var(--brand-gradient)' }}>
-                <Phone size={16} />
-              </span>
-              Call {CONTACT.phone}
-            </a>
-          </div>
+          {/* heavier at the foot, so the figures sitting on the photo stay readable */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            aria-hidden="true"
+            style={{ background: 'linear-gradient(to top, rgba(5,9,18,.88) 0%, rgba(5,9,18,.6) 32%, rgba(5,9,18,.1) 62%, transparent 100%)' }}
+          />
+          <dl className="absolute inset-x-4 bottom-4 grid grid-cols-3 gap-3 sm:inset-x-5 sm:bottom-5">
+            {/* reversed column: the figure reads first, but dt still precedes
+                dd in the markup — and the label is written once, not twice */}
+            {credentials.map((s) => (
+              <div key={s.label} className="flex flex-col-reverse gap-1.5">
+                <dt className="text-[10.5px] leading-snug text-white/70 sm:text-[11px]">{s.label}</dt>
+                <dd>
+                  <Counter
+                    value={s.value}
+                    suffix={s.suffix}
+                    decimals={s.decimals}
+                    className="block font-display text-[21px] font-semibold leading-none tracking-[-0.04em] text-white sm:text-[24px]"
+                  />
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
+      </Reveal>
+
+      {/* address */}
+      <Reveal delay={0.3} className="mt-8 border-t border-line pt-7">
+        <h3 className="text-[15px] font-semibold text-ink">Address</h3>
+        <p className="mt-2.5 max-w-sm text-[15.5px] leading-relaxed text-muted">
+          Simply ICT, North Lakes, QLD 4509, Australia.
+          <br />
+          Monday – Friday, 8:30am – 5:30pm.
+        </p>
+        <a
+          href={DIRECTIONS}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group mt-3 inline-flex items-center gap-1.5 text-[14px] font-semibold text-brand-deep underline-offset-4 hover:underline"
+        >
+          <Navigation size={14} />
+          Get directions
+          <ArrowUpRight size={14} className="transition-transform duration-300 group-hover:rotate-45" />
+        </a>
       </Reveal>
     </div>
   )
 }
 
-/* ───────── Message form ───────── */
-const field =
-  'w-full rounded-xl border border-line bg-white px-4 py-3 text-[15px] text-ink placeholder:text-muted/60 outline-none transition-[border-color,box-shadow] duration-200 focus:border-brand-blue focus:shadow-[0_0_0_4px_rgba(59,130,246,.12)]'
-
-function Label({ htmlFor, children, optional }) {
+/* ───────── "I'm not a robot" check ─────────
+   A plain tick-box gate: nothing to read, nothing to type. Together with the
+   honeypot fields in the form it turns away the drive-by bots. There is no
+   third-party script and no site key, so nothing about the visitor leaves the
+   page — equally, there is no server-side proof, which a static site has
+   nowhere to run. */
+function RobotCheck({ state, onChange, invalid, errorId }) {
+  const checking = state === 'checking'
+  const verified = state === 'verified'
   return (
-    <label htmlFor={htmlFor} className="mb-1.5 block text-[13.5px] font-semibold text-ink">
-      {children}
-      {optional ? <span className="ml-1 font-normal text-muted">(optional)</span> : <span className="ml-0.5 text-brand-blue">*</span>}
-    </label>
+    <div
+      className={`flex items-center justify-between gap-4 rounded-2xl border bg-paper px-4 py-3.5 transition-colors duration-300 ${
+        invalid ? 'border-red-400' : verified ? 'border-brand-blue/35' : 'border-line'
+      }`}
+    >
+      <label className="flex cursor-pointer select-none items-center gap-3.5">
+        <span className="relative grid h-[26px] w-[26px] shrink-0 place-items-center">
+          <input
+            type="checkbox"
+            checked={checking || verified}
+            onChange={onChange}
+            aria-invalid={invalid || undefined}
+            aria-describedby={errorId}
+            className="peer absolute inset-0 h-full w-full cursor-pointer appearance-none rounded-[8px] border border-line bg-white transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/45 focus-visible:ring-offset-2"
+          />
+          {checking && (
+            <span
+              className="pointer-events-none relative h-[15px] w-[15px] animate-spin rounded-full border-2 border-brand-blue/25 border-t-brand-blue"
+              aria-hidden="true"
+            />
+          )}
+          {verified && (
+            <>
+              <span
+                className="pointer-events-none absolute inset-0 rounded-[8px]"
+                aria-hidden="true"
+                style={{ background: 'var(--brand-gradient)' }}
+              />
+              <Check size={16} strokeWidth={3} className="pointer-events-none relative text-white" aria-hidden="true" />
+            </>
+          )}
+        </span>
+        <span className="text-[15px] font-medium text-ink">I’m not a robot</span>
+      </label>
+
+      <span className="flex shrink-0 flex-col items-center gap-0.5">
+        <ShieldCheck size={18} className={verified ? 'text-brand-blue' : 'text-muted/70'} />
+        <span className="text-[8.5px] font-semibold uppercase tracking-[0.12em] text-muted/70">Privacy</span>
+      </span>
+    </div>
   )
 }
 
+/* ───────── Message form ─────────
+   Underline fields rather than boxes, with the "what are you looking for"
+   chips leading the form. Labels are present but visually hidden — the
+   placeholder carries the name on screen, the label carries it to a reader. */
+const field =
+  'w-full border-x-0 border-b border-t-0 border-line bg-transparent px-0 py-3 text-[15.5px] text-ink placeholder:text-muted/70 outline-none transition-colors duration-200 focus:border-brand-blue'
+
 function MessageForm() {
   const reduce = useReducedMotion()
-  const [values, setValues] = useState({ name: '', email: '', phone: '', subject: '', message: '' })
-  const [trap, setTrap] = useState({ company: '', website: '' }) // honeypots — real people leave these blank
+  const [values, setValues] = useState({ name: '', email: '', phone: '', company: '', subject: '', message: '' })
+  const [trap, setTrap] = useState({ address2: '', website: '' }) // honeypots — real people leave these blank
+  const [robot, setRobot] = useState('idle') // idle | checking | verified
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle') // idle | sending | sent | mailto | error
+  const robotTimer = useRef(null)
+
+  useEffect(() => () => window.clearTimeout(robotTimer.current), [])
 
   const set = (k) => (e) => {
     setValues((v) => ({ ...v, [k]: e.target.value }))
     if (errors[k]) setErrors((er) => ({ ...er, [k]: undefined }))
+  }
+
+  // a short pause before the tick lands, so the check reads as a check
+  const onRobotChange = (e) => {
+    window.clearTimeout(robotTimer.current)
+    setErrors((er) => ({ ...er, robot: undefined }))
+    if (!e.target.checked) { setRobot('idle'); return }
+    setRobot('checking')
+    robotTimer.current = window.setTimeout(() => setRobot('verified'), reduce ? 0 : 650)
   }
 
   const validate = () => {
@@ -204,13 +233,16 @@ function MessageForm() {
     if (!values.name.trim()) er.name = 'Please tell us your name.'
     if (!/^\S+@\S+\.\S+$/.test(values.email.trim())) er.email = 'Please enter a valid email address.'
     if (!values.message.trim()) er.message = 'Please add a short message.'
+    if (robot !== 'verified') {
+      er.robot = robot === 'checking' ? 'Just a moment — still checking.' : 'Please confirm you’re not a robot.'
+    }
     setErrors(er)
     return Object.keys(er).length === 0
   }
 
   const onSubmit = async (e) => {
     e.preventDefault()
-    if (trap.company || trap.website) { setStatus('sent'); return } // quietly drop bots
+    if (trap.address2 || trap.website) { setStatus('sent'); return } // quietly drop bots
     if (!validate()) return
 
     if (!FORM_ENDPOINT) {
@@ -219,7 +251,8 @@ function MessageForm() {
         `Name: ${values.name}`,
         `Email: ${values.email}`,
         values.phone ? `Phone: ${values.phone}` : null,
-        values.subject ? `Subject: ${values.subject}` : null,
+        values.company ? `Company: ${values.company}` : null,
+        values.subject ? `Looking for: ${values.subject}` : null,
         '',
         values.message,
       ].filter((line) => line !== null).join('\n')
@@ -242,9 +275,19 @@ function MessageForm() {
   }
 
   const done = status === 'sent' || status === 'mailto'
+  const reset = () => {
+    setStatus('idle')
+    setValues({ name: '', email: '', phone: '', company: '', subject: '', message: '' })
+    window.clearTimeout(robotTimer.current)
+    setRobot('idle')
+    setErrors({})
+  }
 
   return (
-    <div id="message" className="relative overflow-hidden rounded-[28px] border border-line bg-white p-6 shadow-[0_40px_80px_-50px_rgba(11,18,32,.5)] sm:p-8 lg:p-10">
+    <div
+      id="message"
+      className="relative overflow-hidden rounded-[28px] border border-line bg-white p-6 shadow-[0_40px_80px_-50px_rgba(11,18,32,.5)] sm:p-8 lg:p-10"
+    >
       <div
         className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full opacity-60 blur-3xl"
         aria-hidden="true"
@@ -258,7 +301,7 @@ function MessageForm() {
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: EASE }}
-            className="relative flex min-h-[520px] flex-col items-center justify-center text-center"
+            className="relative flex min-h-[560px] flex-col items-center justify-center text-center"
           >
             <motion.span
               initial={{ scale: 0 }}
@@ -283,11 +326,7 @@ function MessageForm() {
                 </p>
               </>
             )}
-            <button
-              type="button"
-              onClick={() => { setStatus('idle'); setValues({ name: '', email: '', phone: '', subject: '', message: '' }) }}
-              className="mt-7 text-[14px] font-semibold text-brand-deep underline-offset-4 hover:underline"
-            >
+            <button type="button" onClick={reset} className="mt-7 text-[14px] font-semibold text-brand-deep underline-offset-4 hover:underline">
               Send another message
             </button>
           </motion.div>
@@ -301,68 +340,85 @@ function MessageForm() {
             transition={{ duration: 0.4, ease: EASE }}
             className="relative"
           >
-            <h2 className="text-[28px] font-semibold tracking-[-0.03em] text-ink md:text-[32px]">Send us a message</h2>
-            <p className="mt-2 text-[15.5px] text-muted">Complete the form and we’ll reply within one business day.</p>
-
             {/* honeypots: hidden from people, tempting to bots */}
             <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
-              <label>Company (leave blank)<input tabIndex={-1} autoComplete="off" value={trap.company} onChange={(e) => setTrap((t) => ({ ...t, company: e.target.value }))} /></label>
+              <label>Address line 2 (leave blank)<input tabIndex={-1} autoComplete="off" value={trap.address2} onChange={(e) => setTrap((t) => ({ ...t, address2: e.target.value }))} /></label>
               <label>Website URL (leave blank)<input tabIndex={-1} autoComplete="off" value={trap.website} onChange={(e) => setTrap((t) => ({ ...t, website: e.target.value }))} /></label>
             </div>
 
-            <div className="mt-8 grid gap-5 sm:grid-cols-2">
-              <div>
-                <Label htmlFor="c-name">Your name</Label>
-                <input id="c-name" autoComplete="name" value={values.name} onChange={set('name')} aria-invalid={!!errors.name} aria-describedby={errors.name ? 'c-name-err' : undefined} className={`${field} ${errors.name ? '!border-red-400' : ''}`} placeholder="Jane Smith" />
+            <h2 className="text-[27px] font-semibold tracking-[-0.03em] text-ink md:text-[31px]">Send us a message</h2>
+            <p className="mt-2 text-[15.5px] leading-relaxed text-muted">
+              Tell us what you need and we’ll reply within one business day.
+            </p>
+
+            {/* what are you looking for */}
+            <fieldset className="mt-8">
+              <legend className="text-[17px] font-semibold tracking-[-0.02em] text-ink">What are you looking for?</legend>
+              <div className="mt-4 flex flex-wrap gap-2.5">
+                {SUBJECTS.map((s) => {
+                  const active = values.subject === s
+                  return (
+                    <button
+                      key={s}
+                      type="button"
+                      aria-pressed={active}
+                      onClick={() => setValues((v) => ({ ...v, subject: active ? '' : s }))}
+                      className={`rounded-full border px-4 py-2 text-[13.5px] font-medium transition-[border-color,background-color,color,box-shadow] duration-200 ${
+                        active
+                          ? 'border-transparent text-white shadow-[0_10px_24px_-12px_rgba(59,130,246,.9)]'
+                          : 'border-line bg-white text-ink/75 hover:border-brand-blue/40 hover:text-ink'
+                      }`}
+                      style={active ? { background: 'var(--brand-gradient)' } : undefined}
+                    >
+                      {s}
+                    </button>
+                  )
+                })}
+              </div>
+            </fieldset>
+
+            {/* fields */}
+            <div className="mt-9 grid gap-x-8 gap-y-1 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <label htmlFor="c-name" className="sr-only">Your name</label>
+                <input id="c-name" autoComplete="name" value={values.name} onChange={set('name')} aria-invalid={!!errors.name} aria-describedby={errors.name ? 'c-name-err' : undefined} className={`${field} ${errors.name ? '!border-red-400' : ''}`} placeholder="Name" />
                 {errors.name && <p id="c-name-err" className="mt-1.5 text-[13px] text-red-500">{errors.name}</p>}
               </div>
               <div>
-                <Label htmlFor="c-email">Your email</Label>
-                <input id="c-email" type="email" autoComplete="email" value={values.email} onChange={set('email')} aria-invalid={!!errors.email} aria-describedby={errors.email ? 'c-email-err' : undefined} className={`${field} ${errors.email ? '!border-red-400' : ''}`} placeholder="jane@company.com.au" />
+                <label htmlFor="c-email" className="sr-only">Your email</label>
+                <input id="c-email" type="email" autoComplete="email" value={values.email} onChange={set('email')} aria-invalid={!!errors.email} aria-describedby={errors.email ? 'c-email-err' : undefined} className={`${field} ${errors.email ? '!border-red-400' : ''}`} placeholder="Email" />
                 {errors.email && <p id="c-email-err" className="mt-1.5 text-[13px] text-red-500">{errors.email}</p>}
               </div>
-              <div className="sm:col-span-2">
-                <Label htmlFor="c-phone" optional>Phone number</Label>
-                <input id="c-phone" type="tel" autoComplete="tel" value={values.phone} onChange={set('phone')} className={field} placeholder="04xx xxx xxx" />
+              <div>
+                <label htmlFor="c-phone" className="sr-only">Phone number (optional)</label>
+                <input id="c-phone" type="tel" autoComplete="tel" value={values.phone} onChange={set('phone')} className={field} placeholder="Phone number" />
               </div>
-
-              <fieldset className="sm:col-span-2">
-                <legend className="mb-2 block text-[13.5px] font-semibold text-ink">
-                  What can we help with?<span className="ml-1 font-normal text-muted">(optional)</span>
-                </legend>
-                <div className="flex flex-wrap gap-2">
-                  {SUBJECTS.map((s) => {
-                    const active = values.subject === s
-                    return (
-                      <button
-                        key={s}
-                        type="button"
-                        aria-pressed={active}
-                        onClick={() => setValues((v) => ({ ...v, subject: active ? '' : s }))}
-                        className={`rounded-full border px-4 py-2 text-[13.5px] font-medium transition-[border-color,background-color,color,box-shadow] duration-200 ${
-                          active
-                            ? 'border-transparent text-white shadow-[0_10px_24px_-12px_rgba(59,130,246,.9)]'
-                            : 'border-line bg-white text-ink/75 hover:border-brand-blue/40 hover:text-ink'
-                        }`}
-                        style={active ? { background: 'var(--brand-gradient)' } : undefined}
-                      >
-                        {s}
-                      </button>
-                    )
-                  })}
-                </div>
-              </fieldset>
-
               <div className="sm:col-span-2">
-                <Label htmlFor="c-message">Your message</Label>
-                <textarea id="c-message" rows={5} value={values.message} onChange={set('message')} aria-invalid={!!errors.message} aria-describedby={errors.message ? 'c-message-err' : undefined} className={`${field} resize-y ${errors.message ? '!border-red-400' : ''}`} placeholder="Tell us a little about what you need…" />
+                <label htmlFor="c-company" className="sr-only">Your company name (optional)</label>
+                <input id="c-company" autoComplete="organization" value={values.company} onChange={set('company')} className={field} placeholder="Your company name" />
+              </div>
+              <div className="sm:col-span-2">
+                <label htmlFor="c-message" className="sr-only">Your message</label>
+                <textarea id="c-message" rows={4} value={values.message} onChange={set('message')} aria-invalid={!!errors.message} aria-describedby={errors.message ? 'c-message-err' : undefined} className={`${field} resize-y ${errors.message ? '!border-red-400' : ''}`} placeholder="Please tell us what you need…" />
                 {errors.message && <p id="c-message-err" className="mt-1.5 text-[13px] text-red-500">{errors.message}</p>}
               </div>
             </div>
 
-            <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="max-w-sm text-[12.5px] leading-relaxed text-muted">
-                We only use your details to respond to your enquiry. See our <a href="/#top" className="font-medium text-ink underline-offset-4 hover:underline">Privacy Policy</a>.
+            {/* human check */}
+            <div className="mt-8 max-w-[320px]">
+              <RobotCheck
+                state={robot}
+                onChange={onRobotChange}
+                invalid={!!errors.robot}
+                errorId={errors.robot ? 'c-robot-err' : undefined}
+              />
+              {errors.robot && <p id="c-robot-err" className="mt-2 text-[13px] text-red-500">{errors.robot}</p>}
+            </div>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="max-w-xs text-[12.5px] leading-relaxed text-muted">
+                We only use your details to respond to your enquiry. See our{' '}
+                <a href="/privacy-policy" className="font-medium text-ink underline-offset-4 hover:underline">Privacy Policy</a>.
               </p>
               <button
                 type="submit"
@@ -370,7 +426,7 @@ function MessageForm() {
                 className="group inline-flex shrink-0 items-center gap-3 rounded-full py-2.5 pl-6 pr-2.5 text-[15px] font-semibold text-white transition-[transform,box-shadow,filter] duration-300 hover:shadow-[0_12px_32px_-10px_rgba(59,130,246,.75)] active:scale-[0.98] disabled:opacity-70"
                 style={{ background: 'var(--brand-gradient)' }}
               >
-                {status === 'sending' ? 'Sending…' : 'Send message'}
+                {status === 'sending' ? 'Sending…' : 'Submit'}
                 <span className="grid h-8 w-8 place-items-center rounded-full bg-white text-brand-blue">
                   <Send size={15} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
@@ -389,12 +445,11 @@ function MessageForm() {
 }
 
 function ContactMain() {
-  const open = useOpenStatus()
   return (
-    <section id="get-in-touch" className="section relative overflow-hidden bg-paper">
+    <section id="get-in-touch" className="section relative overflow-hidden bg-white">
       <div className="container-site relative">
         <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16 xl:gap-20">
-          <Details open={open} />
+          <Details />
           <Reveal y={40}>
             <MessageForm />
           </Reveal>
@@ -550,7 +605,7 @@ function FaqItem({ item, open, onToggle, id }) {
 function Faq() {
   const [open, setOpen] = useState(0)
   return (
-    <section className="section bg-paper">
+    <section className="section bg-white">
       <div className="container-site">
         <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
           <div className="lg:sticky lg:top-28 lg:self-start">
@@ -588,6 +643,7 @@ export default function Contact() {
         title="Prefer email or a call back?"
         sub="We’ll respond to every enquiry within one business day."
         primaryLabel={`Email ${CONTACT.email}`}
+        primaryHref={`mailto:${CONTACT.email}`}
       />
     </>
   )

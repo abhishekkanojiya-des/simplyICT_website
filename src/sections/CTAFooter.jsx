@@ -10,6 +10,10 @@ export function CTA({
   title = 'Ready to simplify your technology?',
   sub = 'Free, no-obligation advice from a local team.',
   primaryLabel = 'Book a free consultation',
+  /* The primary action sends people to the contact page, where the form, the
+     phone number and the address all live. Pages whose label names an address
+     instead (e.g. "Email info@…") pass their own href. */
+  primaryHref = '/contact-us',
 }) {
   const reduce = useReducedMotion()
   return (
@@ -53,7 +57,7 @@ export function CTA({
               </div>
               <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
                 <a
-                  href={`mailto:${CONTACT.email}`}
+                  href={primaryHref}
                   className="group inline-flex items-center justify-between gap-3 rounded-full bg-white py-2.5 pl-6 pr-2.5 text-[15px] font-semibold text-ink shadow-[0_10px_30px_-12px_rgba(7,16,31,.5)] transition-transform hover:-translate-y-0.5"
                 >
                   {primaryLabel}
@@ -98,7 +102,7 @@ const COLS = [
   {
     h: 'Legal',
     links: [
-      { label: 'Privacy Policy', href: '/#top' },
+      { label: 'Privacy Policy', href: '/privacy-policy' },
       { label: 'Terms of Service', href: '/#top' },
     ],
   },

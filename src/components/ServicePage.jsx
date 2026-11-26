@@ -110,7 +110,7 @@ export function PageHero({ page, next = '#explore' }) {
                 {hero.text}
               </motion.p>
               <motion.div {...fade(0.72)} className="mt-6 flex flex-wrap gap-3">
-                <Button href={hero.ctaHref || '#contact'}>{hero.cta || 'Book a free consultation'}</Button>
+                <Button href={hero.ctaHref || '/contact-us'}>{hero.cta || 'Book a free consultation'}</Button>
               </motion.div>
             </div>
             <motion.a
@@ -152,7 +152,7 @@ function Why({ why }) {
               <p className="mt-5 max-w-md text-[17px] leading-relaxed text-muted">{why.text}</p>
             </Reveal>
             <Reveal delay={0.2} className="mt-8">
-              <Button href="#contact">{why.cta || 'Book a free consultation'}</Button>
+              <Button href="/contact-us">{why.cta || 'Book a free consultation'}</Button>
             </Reveal>
           </div>
 
@@ -332,7 +332,7 @@ function StackedServiceCard({ service, index, total, progress }) {
           <motion.hr variants={rise} className="my-7 border-line" />
 
           <motion.div variants={rise} className="mt-auto">
-            <Button href="#contact">Learn more</Button>
+            <Button href={service.href || "/contact-us"}>Learn more</Button>
           </motion.div>
         </motion.div>
 

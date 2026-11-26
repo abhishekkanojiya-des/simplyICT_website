@@ -98,7 +98,7 @@ export function Eyebrow({ children, className = '', dark = false }) {
 }
 
 /* ───────────── Text-roll button ───────────── */
-export function Button({ children, href = '#contact', variant = 'brand', className = '', icon = true }) {
+export function Button({ children, href = '/contact-us', variant = 'brand', className = '', icon = true }) {
   const base =
     'group relative inline-flex shrink-0 items-center gap-3 whitespace-nowrap rounded-full py-2.5 pl-5 pr-2.5 text-[15px] font-semibold transition-[transform,box-shadow,filter,background-color,border-color] duration-300 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2'
   const styles = {

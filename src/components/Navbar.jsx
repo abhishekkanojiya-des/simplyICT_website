@@ -39,13 +39,16 @@ function Dropdown({ item }) {
   )
 }
 
-export default function Navbar({ path = '/' }) {
+/* `solid` forces the opaque state from the top, for pages that open on a light
+   background instead of a dark photo banner (e.g. the privacy policy). */
+export default function Navbar({ path = '/', solid = false }) {
   const [open, setOpen] = useState(null)
   const [mobile, setMobile] = useState(false)
-  const [pill, setPill] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const [mAcc, setMAcc] = useState(null)
   const { scrollY } = useScroll()
-  useMotionValueEvent(scrollY, 'change', (y) => setPill(y > 60))
+  useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > 60))
+  const pill = solid || scrolled
   useEffect(() => { document.body.style.overflow = mobile ? 'hidden' : '' }, [mobile])
   // a top-level item is "current" when its href is a page (not a hash link) we're on
   const isCurrent = (href) => !!href && !href.includes('#') && href !== '/' && (path === href || path.startsWith(`${href}/`))
@@ -105,7 +108,7 @@ export default function Navbar({ path = '/' }) {
               <Phone size={15} className={pill ? 'text-brand-blue' : 'text-brand-cyan'} />
               <span className="hidden min-[1400px]:inline">{CONTACT.phone}</span>
             </a>
-            <Button href="#contact" className="hidden sm:inline-flex">Free quote</Button>
+            <Button href="/contact-us" className="hidden sm:inline-flex">Free quote</Button>
             <button
               onClick={() => setMobile(true)}
               className={`grid h-11 w-11 place-items-center rounded-full border transition-colors xl:hidden ${pill ? 'border-line bg-white text-ink' : 'border-white/25 bg-white/[0.06] text-white'}`}
@@ -172,7 +175,7 @@ export default function Navbar({ path = '/' }) {
               ))}
             </motion.ul>
             <div className="mt-6 grid gap-3" onClick={() => setMobile(false)}>
-              <Button href="#contact" className="justify-between">Get a free quote</Button>
+              <Button href="/contact-us" className="justify-between">Get a free quote</Button>
               <Button href={CONTACT.phoneHref} variant="outline" className="justify-between">Call {CONTACT.phone}</Button>
             </div>
           </motion.div>
